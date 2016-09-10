@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en" width="300px">
+<head>
+	<meta charset="UTF-8">
+	<title>iPhone 7 Jet Blcak Reservation System</title>
+</head>
+<script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+<script type="text/javascript">
+  var d;
+  var areaCode = 'CN';
+  var changeArea = function () {
+    clearInterval(d);
+    var status = document.getElementById('status');
+    areaCode = document.getElementById('area').value;
+    alert('Area changed to ' + areaCode + ' Please Start Again !');
+  };
+  var queryBackend = function () {
+  	var status = document.getElementById('status');
+  	$.get('http://115.159.58.205:2333/?area=' + areaCode).success(function (data) {
+  		if (data && data.length > 0) {
+  			for (var i = 0; i < data.length; i++) {
+  				alert("Find an iPhone in " + data[i].store + ' ' + data[i].list + ', which  model is '+ data[i].name + ' ' + data[i].model);
+  			}
+  		} else {
+  			status.innerHTML = 'Still waiting for Apple iReserve in ' + areaCode + '...';
+  		}
+  	}).error(function (data) {
+  		alert('Check Network Pls');
+  	});
+  };
+  var query = function () {
+  	clearInterval(d);
+  	d = setInterval(function() {
+  		queryBackend();
+  	}, 2000)
+  };  
+  var stop = function () {
+  	var status = document.getElementById('status');
+  	status.innerHTML = 'Stopped';
+  	clearInterval(d);
+  };
+</script>
+<body>
+	<h3> iPhone 7 Jet Blcak Reservation System </h3>
+	<label>Please select a country to monitor</label>
+	<select id="area" onchange="changeArea()">
+		<option value="CN">China Mainland</option>
+		<option value="JP">Japan</option>
+		<option value="HK">Hong Kong SAR</option>
+	</select>
+	<div>
+		<p></p>
+		<button onclick="query()">Start monitoring</button>
+		<button onclick="stop()">Stop monitoring</button>
+	</div>
+	<p>made by horipse</p>
+	<div id="board"></div>
+	<span id="status"></span>
+</body>
+</html>
