@@ -32,7 +32,7 @@ NOTE: We it monitors the iPhone 7, you may manually order by this link before
 https://reserve.cdn-apple.com/CN/zh_CN/reserve/iPhone/availability?channel=1&returnURL=&store=&partNumber=
 ``
 
-Please fill the store ID (example : R359) and partNumber (example: MNH12CH/A)
+Please fill the store(example : R359) and partNumber(example: MNH12CH/A)
 
 Area code is also supported to modify
 ```
@@ -43,6 +43,8 @@ HK/zh_HK   Hong Kong SAR
 JP/ja_JP   Japan
 
 AE/en_AE   UAE
+
+etc..
 ```
 ************************************
 
