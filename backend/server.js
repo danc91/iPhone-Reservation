@@ -3,11 +3,57 @@ const http = require('http')
 const https = require('https')
 const url = require('url')
 const fs = require('fs')
+const qs = require('querystring')
 const modelName = ["iPhone 7 128G", "iPhone 7 256G", "iPhone 7 Plus 128G", "iPhone 7 Plus 256G"]
+const mobile = ''
+const mobile2 = ''
+const get_user_info_uri = '/v2/user/get.json'
+const sms_host = 'sms.yunpian.com'
+const apikey = ''
 
 let stockData, resultData
 let queryUrl, model, list, name
 let resultArray = []
+let smsText
+
+let query_user_info = (uri, apikey) => {
+  let post_data = {
+    'apikey': apikey,
+  }
+  let content = qs.stringify(post_data)
+  smsSend(uri, content, sms_host)
+}
+
+let send_sms = (uri, apikey, mobile, tpl_value) => {
+  let post_data = {
+    'apikey': apikey,
+    'mobile': mobile,
+    'tpl_id': 1563306,
+    'tpl_value': qs.stringify(tpl_value)
+  }
+  let content = qs.stringify(post_data)
+  smsSend(uri, content, sms_host)
+}
+
+let smsSend = (uri, content, host) => {
+  let options = {
+    hostname: host,
+    port: 443,
+    path: uri,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+    }
+  }
+  let req = https.request(options, function (res) {
+    res.setEncoding('utf8')
+    res.on('data', function (chunk) {
+      console.log('BODY: ' + chunk)
+    })
+  })
+    req.write(content) 
+    req.end()
+}
 
 let getAreaInfo = areaCode => {
   if (areaCode === 'CN') {
@@ -50,9 +96,9 @@ let queryAppleStore = (callback, areaCode) => {
       if (chunks.length > 0) {
         data = new Buffer(size)
         for (var i = 0, pos = 0, l = chunks.length; i < l; i++) {  
-          var chunk = chunks[i];  
-          chunk.copy(data, pos);  
-          pos += chunk.length;  
+          var chunk = chunks[i]
+          chunk.copy(data, pos)
+          pos += chunk.length
         }
       }
       stockData = JSON.parse(data)
@@ -98,6 +144,11 @@ let acceptRequest = (request, response) => {
     getAreaInfo(areaCode)
     queryAppleStore(() => {
       processData(stockData, () => {
+        if (resultArray.length > 0) {
+          smsText = {'#content#': '发现机子了,第一台在' + resultArray[0].store + ', 型号是 ' + resultArray[0].name}
+          send_sms('/v1/sms/tpl_send.json', apikey, mobile, smsText)
+          send_sms('/v1/sms/tpl_send.json', apikey, mobile2, smsText)
+        }
         response.end(JSON.stringify(resultArray))
       })
     }, areaCode)
@@ -106,6 +157,7 @@ let acceptRequest = (request, response) => {
 
 let serverStart = () => {
   http.createServer(acceptRequest).listen(2333)
+  query_user_info(get_user_info_uri, apikey)
 }
 
 serverStart()
