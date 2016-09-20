@@ -5,11 +5,12 @@ const url = require('url')
 const fs = require('fs')
 const qs = require('querystring')
 const modelName = ["iPhone 7 128G", "iPhone 7 256G", "iPhone 7 Plus 128G", "iPhone 7 Plus 256G"]
+//-----For SMS API------
 const mobile = ''
-const mobile2 = ''
 const get_user_info_uri = '/v2/user/get.json'
 const sms_host = 'sms.yunpian.com'
 const apikey = ''
+const tpl_id = 0
 
 let stockData, resultData
 let queryUrl, model, list, name
@@ -147,7 +148,6 @@ let acceptRequest = (request, response) => {
         if (resultArray.length > 0) {
           smsText = {'#content#': '发现机子了,第一台在' + resultArray[0].store + ', 型号是 ' + resultArray[0].name}
           send_sms('/v1/sms/tpl_send.json', apikey, mobile, smsText)
-          send_sms('/v1/sms/tpl_send.json', apikey, mobile2, smsText)
         }
         response.end(JSON.stringify(resultArray))
       })
