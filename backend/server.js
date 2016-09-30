@@ -59,7 +59,7 @@ let smsSend = (uri, content, host) => {
 let getAreaInfo = areaCode => {
   if (areaCode === 'CN') {
     model = ["MNH22CH/A", "MNH72CH/A", "MNFU2CH/A", "MNG02CH/A"]
-    list = ["R359", "R389", "R390", "R401", "R581", "R683", "R493", "R643", "R577", "R471", "R532", "R484" , "R572"]
+    list = ["R359", "R389", "R390", "R401", "R581", "R683", "R493", "R643", "R577", "R471", "R532", "R484", "R572"]
     name = ["上海 南京东路", "上海 浦东", "上海 香港广场", "上海 环贸iapm", "上海 五角场", "上海 环球港", "南京 艾尚天地", "南京 虹悦城", "广州 天环广场", "无锡 恒隆广场", "杭州 西湖", "杭州 万象城", "深圳 益田假日", "郑州 万象城"]
     //old queryUrl = 'https://reserve-cn.apple.com/CN/zh_CN/reserve/iPhone/availability.json'
     queryUrl = 'https://reserve.cdn-apple.com/CN/zh_CN/reserve/iPhone/availability.json'
@@ -133,10 +133,10 @@ let acceptRequest = (request, response) => {
   let pathname = url.parse(request.url).pathname
   let areaCode = url.parse(request.url, true).query.area
   if (pathname === '/front/index.html') {
-      fs.readFile(pathname.substring(1), "binary", (err, file) => {
-        response.writeHead(200, {'Content-Type': 'text/html'})
-        response.write(file, "binary")
-        response.end()
+    fs.readFile(pathname.substring(1), "binary", (err, file) => {
+      response.writeHead(200, {'Content-Type': 'text/html'})
+      response.write(file, "binary")
+      response.end()
     })
   }
 
